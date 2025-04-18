@@ -3,14 +3,14 @@ import { Button } from './ui/button'
 
 const Header = () => {
   return (
-    <header>
+    <header className='sticky top-0 left-0 w-full transparent z-50'>
         <div className='flex justify-between px-5 py-5'>
             <div>
-                <h1>📜 Forming</h1>
+                <h1 className='font-bold text-3xl'>📜 FormCraft</h1>
             </div>
             <div className='flex space-x-5'>
-                <Button>Creator Login</Button>
-                <Button>Participant Login</Button>
+                <Button className='w-[150px]'>Creator Login</Button>
+                <Button className='w-[150px]'>Participant Login</Button>
             </div>
         </div>
 
