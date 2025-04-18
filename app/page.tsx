@@ -4,8 +4,10 @@ import HeroSection from "@/components/HeroSection";
 export default function Home() {
   return (
     <>
-      <Header />
-      <HeroSection />
+      <div>
+        <Header />
+        <HeroSection />
+      </div>
     </>
   );
 }
