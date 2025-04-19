@@ -313,6 +313,27 @@ export default function SurveyDashboard() {
             View Detailed Results
           </Button>
         </div>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {/* Example survey card */}
+          {[
+            "Customer Satisfaction",
+            "Product Feedback",
+            "Website Usability",
+            "Employee Engagement",
+          ].map((title, idx) => (
+            <Card
+              key={idx}
+              className="hover:shadow-lg transition-shadow cursor-pointer"
+            >
+              <CardContent className="flex flex-col items-center justify-center h-36 text-center gap-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 text-purple-700">
+                  <FilePlus className="h-6 w-6" />
+                </div>
+                <p className="font-medium">{title}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </main>
     </div>
   );
