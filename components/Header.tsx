@@ -25,18 +25,30 @@ const Header = () => {
     }
   }, [wallet.status, loginType]);
   return (
-    <header className="sticky top-0 left-0 w-full transparent z-50">
+    <header className="top-0 left-0 w-full transparent z-50">
       <div className="flex justify-between px-5 py-5">
         <div>
           <h1 className="font-bold text-3xl">📜 FormCraft</h1>
         </div>
+
+        {wallet.status === "connected" && loginType === "creator" && (
+            <>
+            <div className="space-x-7">
+                Hello
+                Robert
+            </div>
+            </>
+          )}
+
+
+
         <div className="flex space-x-5">
           {wallet.status !== "connected" && (
             <>
               <div onClick={() => setLoginType("creator")}>
                 <ConnectButton
                   label="Creator Login"
-                  className="w-[200px] bg-blue-900 text-white transition duration-300 ease-in-out transform hover:scale-105 hover:bg-blue-800"
+                  className="w-[200px] bg-blue-700 text-white transition duration-300 ease-in-out transform hover:scale-105 hover:bg-blue-800"
                 />
               </div>
               <div onClick={() => setLoginType("participant")}>
