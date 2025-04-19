@@ -2,6 +2,8 @@ import { Montserrat } from "next/font/google";
 import { Badge } from "@/components/ui/badge";
 import { DailyChallenges } from "@/components/daily-challenges";
 import { LevelPath } from "@/components/level-path";
+import Image from "next/image";
+import avatar from "@/components/avatar.png";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -55,7 +57,23 @@ export default function Dashboard() {
             </div>
 
             {/* Right Column - Avatar */}
-            <div className="flex items-center justify-center"></div>
+            <div className="flex flex-col items-center justify-center">
+              {/* Ranking Display */}
+              <div className="mt-7">
+                <h3 className="text-lg font-bold text-purple-800 dark:text-purple-300">
+                  Rank: #1
+                </h3>
+              </div>
+              {/* Avatar Image */}
+              <Image src={avatar} alt="avatar" className="mb-4" />
+
+              {/* Avatar Editing Options */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+              </div>
+            </div>
           </div>
         </section>
 
