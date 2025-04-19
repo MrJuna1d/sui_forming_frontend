@@ -1,12 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Sparkles, Star, Trophy, Gift, ChevronUp, Sword, Shield, Crown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sparkles,
+  Star,
+  Trophy,
+  Gift,
+  ChevronUp,
+  Sword,
+  Shield,
+  Crown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import avatar from "@/public/avatar.png";
 
 // Mock data for rewards with Unsplash pixel art images
 const possibleRewards = [
@@ -179,7 +190,7 @@ const possibleRewards = [
     image:
       "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBpeGVsJTIwYXJ0JTIwbWFwfGVufDB8fDB8fHww",
   },
-]
+];
 
 const rarityColors = {
   Common: "bg-gray-200 text-gray-800",
@@ -188,7 +199,7 @@ const rarityColors = {
   Epic: "bg-purple-200 text-purple-800",
   Legendary: "bg-orange-200 text-orange-800",
   Mythic: "bg-pink-200 text-pink-800",
-}
+};
 
 const typeIcons = {
   Weapon: <Sword className="h-4 w-4" />,
@@ -196,45 +207,45 @@ const typeIcons = {
   Accessory: <Crown className="h-4 w-4" />,
   Skin: <Star className="h-4 w-4" />,
   Special: <Gift className="h-4 w-4" />,
-}
+};
 
 export default function RewardPage() {
-  const [contributionPoints, setContributionPoints] = useState(1000)
-  const [luckLevel, setLuckLevel] = useState(1)
-  const [isSpinning, setIsSpinning] = useState(false)
-  const [showChest, setShowChest] = useState(false)
-  const [openChest, setOpenChest] = useState(false)
-  const [reward, setReward] = useState(null)
-  const [inventory, setInventory] = useState([])
-  const [spinCost] = useState(100)
-  const [recentRewards, setRecentRewards] = useState([])
+  const [contributionPoints, setContributionPoints] = useState(1000);
+  const [luckLevel, setLuckLevel] = useState(1);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [showChest, setShowChest] = useState(false);
+  const [openChest, setOpenChest] = useState(false);
+  const [reward, setReward] = useState(null);
+  const [inventory, setInventory] = useState([]);
+  const [spinCost] = useState(100);
+  const [recentRewards, setRecentRewards] = useState([]);
 
-  const luckPercentage = 5 + (luckLevel - 1) * 2 // Base 5% + 2% per level
+  const luckPercentage = 5 + (luckLevel - 1) * 2; // Base 5% + 2% per level
 
-  const upgradeLuckCost = luckLevel * 500
+  const upgradeLuckCost = luckLevel * 500;
 
   const upgradeLuck = () => {
     if (contributionPoints >= upgradeLuckCost) {
-      setContributionPoints((prev) => prev - upgradeLuckCost)
-      setLuckLevel((prev) => prev + 1)
+      setContributionPoints((prev) => prev - upgradeLuckCost);
+      setLuckLevel((prev) => prev + 1);
     }
-  }
+  };
 
   const spinGacha = () => {
     if (contributionPoints >= spinCost && !isSpinning) {
       // Deduct points
-      setContributionPoints((prev) => prev - spinCost)
+      setContributionPoints((prev) => prev - spinCost);
 
       // Start spinning animation
-      setIsSpinning(true)
-      setShowChest(false)
-      setOpenChest(false)
-      setReward(null)
+      setIsSpinning(true);
+      setShowChest(false);
+      setOpenChest(false);
+      setReward(null);
 
       // Simulate spinning delay
       setTimeout(() => {
-        setIsSpinning(false)
-        setShowChest(true)
+        setIsSpinning(false);
+        setShowChest(true);
 
         // Determine reward with luck factor
         const rarityChances = {
@@ -244,39 +255,47 @@ export default function RewardPage() {
           Epic: 7 + Math.floor(luckPercentage / 3),
           Legendary: 2 + Math.floor(luckPercentage / 5),
           Mythic: 1 + Math.floor(luckPercentage / 10),
-        }
+        };
 
         // Calculate total chance
-        const totalChance = Object.values(rarityChances).reduce((a, b) => a + b, 0)
+        const totalChance = Object.values(rarityChances).reduce(
+          (a, b) => a + b,
+          0
+        );
 
         // Roll for rarity
-        let roll = Math.random() * totalChance
-        let selectedRarity = "Common"
+        let roll = Math.random() * totalChance;
+        let selectedRarity = "Common";
 
         for (const [rarity, chance] of Object.entries(rarityChances)) {
           if (roll < chance) {
-            selectedRarity = rarity
-            break
+            selectedRarity = rarity;
+            break;
           }
-          roll -= chance
+          roll -= chance;
         }
 
         // Filter rewards by rarity and pick one randomly
-        const possibleRewardsOfRarity = possibleRewards.filter((r) => r.rarity === selectedRarity)
-        const selectedReward = possibleRewardsOfRarity[Math.floor(Math.random() * possibleRewardsOfRarity.length)]
+        const possibleRewardsOfRarity = possibleRewards.filter(
+          (r) => r.rarity === selectedRarity
+        );
+        const selectedReward =
+          possibleRewardsOfRarity[
+            Math.floor(Math.random() * possibleRewardsOfRarity.length)
+          ];
 
         // Set as current reward
         setTimeout(() => {
-          setOpenChest(true)
+          setOpenChest(true);
           setTimeout(() => {
-            setReward(selectedReward)
-            setInventory((prev) => [...prev, selectedReward])
-            setRecentRewards((prev) => [selectedReward, ...prev].slice(0, 5))
-          }, 1000)
-        }, 1500)
-      }, 2000)
+            setReward(selectedReward);
+            setInventory((prev) => [...prev, selectedReward]);
+            setRecentRewards((prev) => [selectedReward, ...prev].slice(0, 5));
+          }, 1000);
+        }, 1500);
+      }, 2000);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white p-4 md:p-8">
@@ -285,9 +304,13 @@ export default function RewardPage() {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-yellow-100" />
-            <h2 className="text-xl font-bold text-white">Luck Level: {luckLevel}</h2>
+            <h2 className="text-xl font-bold text-white">
+              Luck Level: {luckLevel}
+            </h2>
           </div>
-          <Badge className="bg-yellow-100 text-yellow-800 px-3 py-1 text-sm font-medium">+{luckPercentage}% Luck</Badge>
+          <Badge className="bg-yellow-100 text-yellow-800 px-3 py-1 text-sm font-medium">
+            +{luckPercentage}% Luck
+          </Badge>
         </div>
         <div className="mt-2">
           <div className="flex justify-between text-xs text-yellow-100 mb-1">
@@ -296,7 +319,6 @@ export default function RewardPage() {
           </div>
           <Progress value={0} className="h-2 bg-yellow-300/30" />
         </div>
-        
       </div>
 
       {/* Points Display */}
@@ -305,7 +327,9 @@ export default function RewardPage() {
           <Star className="h-5 w-5 text-yellow-400" />
           <h2 className="text-xl font-bold">Contribution Points:</h2>
         </div>
-        <div className="text-2xl font-bold text-yellow-400">{contributionPoints}</div>
+        <div className="text-2xl font-bold text-yellow-400">
+          {contributionPoints}
+        </div>
       </div>
 
       {/* Gacha System */}
@@ -329,7 +353,11 @@ export default function RewardPage() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: [0, 1, 0], scale: [0.5, 1.5, 0.5] }}
-                    transition={{ duration: 0.5, repeat: 4, repeatType: "loop" }}
+                    transition={{
+                      duration: 0.5,
+                      repeat: 4,
+                      repeatType: "loop",
+                    }}
                   >
                     <Sparkles className="h-12 w-12 text-yellow-400" />
                   </motion.div>
@@ -337,10 +365,18 @@ export default function RewardPage() {
               </div>
             ) : showChest ? (
               <AnimatePresence>
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="relative"
+                >
                   <div className="relative">
                     <motion.div
-                      animate={openChest ? { rotateX: 45, y: -20 } : { rotateX: 0, y: 0 }}
+                      animate={
+                        openChest
+                          ? { rotateX: 45, y: -20 }
+                          : { rotateX: 0, y: 0 }
+                      }
                       transition={{ duration: 0.5 }}
                       className="w-32 h-16 bg-yellow-800 rounded-t-lg absolute top-0 left-1/2 transform -translate-x-1/2 origin-bottom z-10"
                       style={{ transformStyle: "preserve-3d" }}
@@ -358,7 +394,11 @@ export default function RewardPage() {
                         >
                           <motion.div
                             animate={{ y: [0, -5, 0] }}
-                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Number.POSITIVE_INFINITY,
+                              repeatType: "reverse",
+                            }}
                           >
                             <div className="relative">
                               <img
@@ -369,7 +409,11 @@ export default function RewardPage() {
                               <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: [0, 1, 0] }}
-                                transition={{ delay: 0.5, duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                                transition={{
+                                  delay: 0.5,
+                                  duration: 2,
+                                  repeat: Number.POSITIVE_INFINITY,
+                                }}
                                 className="absolute inset-0 flex items-center justify-center"
                               >
                                 <Sparkles className="w-20 h-20 text-yellow-400" />
@@ -389,16 +433,24 @@ export default function RewardPage() {
                   alt="Treasure Chest"
                   className="h-24 w-24 object-cover rounded-lg mb-4"
                 />
-                <p className="text-center text-purple-200">Spin to win amazing rewards!</p>
+                <p className="text-center text-purple-200">
+                  Spin to win amazing rewards!
+                </p>
               </div>
             )}
           </div>
 
           {reward && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-4"
+            >
               <h4 className="text-lg font-bold">{reward.name}</h4>
               <div className="flex items-center justify-center gap-2 mt-1">
-                <Badge className={`${rarityColors[reward.rarity]}`}>{reward.rarity}</Badge>
+                <Badge className={`${rarityColors[reward.rarity]}`}>
+                  {reward.rarity}
+                </Badge>
                 <Badge variant="outline" className="flex items-center gap-1">
                   {typeIcons[reward.type]}
                   {reward.type}
@@ -418,10 +470,15 @@ export default function RewardPage() {
           {/* Recent Rewards */}
           {recentRewards.length > 0 && (
             <div className="mt-6 w-full">
-              <h4 className="text-sm font-medium text-purple-200 mb-2">Recent Rewards:</h4>
+              <h4 className="text-sm font-medium text-purple-200 mb-2">
+                Recent Rewards:
+              </h4>
               <div className="flex overflow-x-auto gap-2 pb-2">
                 {recentRewards.map((item, index) => (
-                  <div key={index} className="flex-shrink-0 w-12 h-12 relative group">
+                  <div
+                    key={index}
+                    className="flex-shrink-0 w-12 h-12 relative group"
+                  >
                     <img
                       src={item.image || "/placeholder.svg"}
                       alt={item.name}
@@ -432,7 +489,11 @@ export default function RewardPage() {
                       }`}
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100 rounded">
-                      <Badge className={`${rarityColors[item.rarity]} scale-75`}>{item.rarity}</Badge>
+                      <Badge
+                        className={`${rarityColors[item.rarity]} scale-75`}
+                      >
+                        {item.rarity}
+                      </Badge>
                     </div>
                   </div>
                 ))}
@@ -464,12 +525,21 @@ export default function RewardPage() {
                         className="max-w-full max-h-full object-contain rounded"
                       />
                     </div>
-                    <h4 className="font-medium text-sm truncate">{item.name}</h4>
+                    <h4 className="font-medium text-sm truncate">
+                      {item.name}
+                    </h4>
                     <div className="flex items-center justify-between mt-1">
-                      <Badge className={`text-xs ${rarityColors[item.rarity]}`}>{item.rarity}</Badge>
-                      <Badge variant="outline" className="flex items-center gap-1 text-xs">
+                      <Badge className={`text-xs ${rarityColors[item.rarity]}`}>
+                        {item.rarity}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="flex items-center gap-1 text-xs"
+                      >
                         {typeIcons[item.type]}
-                        <span className="sr-only md:not-sr-only">{item.type}</span>
+                        <span className="sr-only md:not-sr-only">
+                          {item.type}
+                        </span>
                       </Badge>
                     </div>
                   </div>
@@ -491,13 +561,11 @@ export default function RewardPage() {
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1 flex justify-center">
             <div className="relative w-48 h-64 bg-indigo-800/50 rounded-lg flex items-center justify-center">
-              <img
-                src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBpeGVsJTIwYXJ0JTIwaGVyb3xlbnwwfHwwfHx8MA%3D%3D"
-                alt="Hero Character"
-                className="h-56 object-contain rounded-lg"
-              />
+              <Image src={avatar} alt="Avatar Image" />
               {/* Equipped items indicators */}
-              {inventory.filter((item) => ["Helmet", "Cape"].some((type) => item.name.includes(type))).length > 0 && (
+              {inventory.filter((item) =>
+                ["Helmet", "Cape"].some((type) => item.name.includes(type))
+              ).length > 0 && (
                 <div className="absolute top-2 right-2">
                   <Badge className="bg-green-500 text-white">Equipped</Badge>
                 </div>
@@ -507,32 +575,41 @@ export default function RewardPage() {
           <div className="flex-1">
             <h4 className="font-bold mb-2">Equipped Items</h4>
             <div className="grid grid-cols-2 gap-2">
-              {["Weapon", "Shield", "Helmet", "Boots", "Gloves", "Cape"].map((slot) => {
-                const equippedItem = inventory.find((item) => item.name.includes(slot))
-                return (
-                  <div key={slot} className="bg-indigo-800/30 rounded p-2 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-indigo-700/30 rounded flex items-center justify-center">
-                      {equippedItem ? (
-                        <div className="relative w-full h-full">
-                          <img
-                            src={equippedItem.image || "/placeholder.svg"}
-                            alt={equippedItem.name}
-                            className="w-full h-full object-contain rounded"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-4 h-4 rounded-full border-2 border-dashed border-indigo-600"></div>
-                      )}
+              {["Weapon", "Shield", "Helmet", "Boots", "Gloves", "Cape"].map(
+                (slot) => {
+                  const equippedItem = inventory.find((item) =>
+                    item.name.includes(slot)
+                  );
+                  return (
+                    <div
+                      key={slot}
+                      className="bg-indigo-800/30 rounded p-2 flex items-center gap-2"
+                    >
+                      <div className="w-8 h-8 bg-indigo-700/30 rounded flex items-center justify-center">
+                        {equippedItem ? (
+                          <div className="relative w-full h-full">
+                            <img
+                              src={equippedItem.image || "/placeholder.svg"}
+                              alt={equippedItem.name}
+                              className="w-full h-full object-contain rounded"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-4 h-4 rounded-full border-2 border-dashed border-indigo-600"></div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium">{slot}</p>
+                        {equippedItem && (
+                          <p className="text-xs text-indigo-300 truncate max-w-[100px]">
+                            {equippedItem.name}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs font-medium">{slot}</p>
-                      {equippedItem && (
-                        <p className="text-xs text-indigo-300 truncate max-w-[100px]">{equippedItem.name}</p>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
+                  );
+                }
+              )}
             </div>
 
             <div className="mt-4">
@@ -566,8 +643,12 @@ export default function RewardPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {["Legendary", "Mythic", "Epic", "Rare", "Uncommon"].map((rarity) => {
-            const count = inventory.filter((item) => item.rarity === rarity).length
-            const total = possibleRewards.filter((item) => item.rarity === rarity).length
+            const count = inventory.filter(
+              (item) => item.rarity === rarity
+            ).length;
+            const total = possibleRewards.filter(
+              (item) => item.rarity === rarity
+            ).length;
 
             return (
               <div
@@ -576,12 +657,12 @@ export default function RewardPage() {
                   rarity === "Legendary"
                     ? "bg-gradient-to-br from-orange-500/30 to-yellow-500/30 border border-orange-400/50"
                     : rarity === "Mythic"
-                      ? "bg-gradient-to-br from-pink-500/30 to-purple-500/30 border border-pink-400/50"
-                      : rarity === "Epic"
-                        ? "bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border border-purple-400/50"
-                        : rarity === "Rare"
-                          ? "bg-gradient-to-br from-blue-500/30 to-cyan-500/30 border border-blue-400/50"
-                          : "bg-gradient-to-br from-green-500/30 to-emerald-500/30 border border-green-400/50"
+                    ? "bg-gradient-to-br from-pink-500/30 to-purple-500/30 border border-pink-400/50"
+                    : rarity === "Epic"
+                    ? "bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border border-purple-400/50"
+                    : rarity === "Rare"
+                    ? "bg-gradient-to-br from-blue-500/30 to-cyan-500/30 border border-blue-400/50"
+                    : "bg-gradient-to-br from-green-500/30 to-emerald-500/30 border border-green-400/50"
                 }`}
               >
                 <div className="flex justify-between items-center mb-2">
@@ -592,7 +673,7 @@ export default function RewardPage() {
                 </div>
                 <Progress value={(count / total) * 100} className="h-1.5" />
               </div>
-            )
+            );
           })}
         </div>
 
@@ -602,28 +683,40 @@ export default function RewardPage() {
               <Trophy className="h-4 w-4 text-yellow-400" />
               Collection Bonus
             </h4>
-            <p className="text-xs text-indigo-200 mb-3">Complete collections to unlock special bonuses!</p>
+            <p className="text-xs text-indigo-200 mb-3">
+              Complete collections to unlock special bonuses!
+            </p>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span>Weapon Collection</span>
                 <Badge variant="outline">
                   {inventory.filter((item) => item.type === "Weapon").length}/
-                  {possibleRewards.filter((item) => item.type === "Weapon").length}
+                  {
+                    possibleRewards.filter((item) => item.type === "Weapon")
+                      .length
+                  }
                 </Badge>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span>Armor Collection</span>
                 <Badge variant="outline">
                   {inventory.filter((item) => item.type === "Armor").length}/
-                  {possibleRewards.filter((item) => item.type === "Armor").length}
+                  {
+                    possibleRewards.filter((item) => item.type === "Armor")
+                      .length
+                  }
                 </Badge>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span>Accessory Collection</span>
                 <Badge variant="outline">
-                  {inventory.filter((item) => item.type === "Accessory").length}/
-                  {possibleRewards.filter((item) => item.type === "Accessory").length}
+                  {inventory.filter((item) => item.type === "Accessory").length}
+                  /
+                  {
+                    possibleRewards.filter((item) => item.type === "Accessory")
+                      .length
+                  }
                 </Badge>
               </div>
             </div>
@@ -634,25 +727,36 @@ export default function RewardPage() {
               <Sparkles className="h-4 w-4 text-yellow-400" />
               Rarity Bonus
             </h4>
-            <p className="text-xs text-indigo-200 mb-3">Collect rare items to increase your power!</p>
+            <p className="text-xs text-indigo-200 mb-3">
+              Collect rare items to increase your power!
+            </p>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span>Legendary Items</span>
                 <span className="text-yellow-400 font-medium">
-                  +{inventory.filter((item) => item.rarity === "Legendary").length * 10}% Damage
+                  +
+                  {inventory.filter((item) => item.rarity === "Legendary")
+                    .length * 10}
+                  % Damage
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span>Mythic Items</span>
                 <span className="text-pink-400 font-medium">
-                  +{inventory.filter((item) => item.rarity === "Mythic").length * 15}% Critical
+                  +
+                  {inventory.filter((item) => item.rarity === "Mythic").length *
+                    15}
+                  % Critical
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span>Epic Items</span>
                 <span className="text-purple-400 font-medium">
-                  +{inventory.filter((item) => item.rarity === "Epic").length * 5}% Defense
+                  +
+                  {inventory.filter((item) => item.rarity === "Epic").length *
+                    5}
+                  % Defense
                 </span>
               </div>
             </div>
@@ -660,5 +764,5 @@ export default function RewardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

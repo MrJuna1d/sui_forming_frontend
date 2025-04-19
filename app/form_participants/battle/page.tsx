@@ -1,23 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Sword, Trophy, Zap } from "lucide-react"
-import { useRouter } from "next/navigation"
-import BattleAnimation from "@/components/BattleAnimation"
-import CharacterCard from "@/components/CharacterCard"
-import BattleResults from "@/components/BattleResult"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Sword, Trophy, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import BattleAnimation from "@/components/BattleAnimation";
+import CharacterCard from "@/components/CharacterCard";
+import BattleResults from "@/components/BattleResult";
 
 export default function BattlePage() {
-  const router = useRouter()
-  const [battleState, setBattleState] = useState<"ready" | "fighting" | "complete">("ready")
-  const [winner, setWinner] = useState<"player" | "opponent" | null>(null)
-  const [playerHealth, setPlayerHealth] = useState(100)
-  const [opponentHealth, setOpponentHealth] = useState(100)
-  const [battleLog, setBattleLog] = useState<string[]>([])
-  const [showResults, setShowResults] = useState(false)
+  const router = useRouter();
+  const [battleState, setBattleState] = useState<
+    "ready" | "fighting" | "complete"
+  >("ready");
+  const [winner, setWinner] = useState<"player" | "opponent" | null>(null);
+  const [playerHealth, setPlayerHealth] = useState(100);
+  const [opponentHealth, setOpponentHealth] = useState(100);
+  const [battleLog, setBattleLog] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   // Player character stats
   const playerCharacter = {
@@ -28,8 +30,8 @@ export default function BattlePage() {
     attack: 25,
     defense: 15,
     speed: 20,
-    image: "/pixel-knight.png",
-  }
+    image: "/character.png",
+  };
 
   // Opponent character stats (hardcoded auto-match)
   const opponentCharacter = {
@@ -40,100 +42,110 @@ export default function BattlePage() {
     attack: 22,
     defense: 12,
     speed: 18,
-    image: "/pixel-warrior.png",
-  }
+    image: "/avatar.png",
+  };
 
   // New stats after winning
   const newStats = {
     rank: playerCharacter.rank + 1,
     contributionPoints: playerCharacter.contributionPoints + 25,
-  }
+  };
 
   // Start battle
   const startBattle = () => {
-    setBattleState("fighting")
-    setBattleLog(["Battle started!"])
-    simulateBattle()
-  }
+    setBattleState("fighting");
+    setBattleLog(["Battle started!"]);
+    simulateBattle();
+  };
 
   // Simulate battle turns
   const simulateBattle = () => {
-    let currentPlayerHealth = playerHealth
-    let currentOpponentHealth = opponentHealth
-    const battleTurns: string[] = ["Battle started!"]
+    let currentPlayerHealth = playerHealth;
+    let currentOpponentHealth = opponentHealth;
+    const battleTurns: string[] = ["Battle started!"];
 
     // Determine who goes first based on speed
-    const playerFirst = playerCharacter.speed >= opponentCharacter.speed
+    const playerFirst = playerCharacter.speed >= opponentCharacter.speed;
 
     // Simulate turns until someone wins
-    let turn = 1
+    let turn = 1;
     const simulateTurn = () => {
       if (currentPlayerHealth <= 0 || currentOpponentHealth <= 0) {
         if (currentPlayerHealth > currentOpponentHealth) {
-          setWinner("player")
-          battleTurns.push("🏆 You won the battle!")
+          setWinner("player");
+          battleTurns.push("🏆 You won the battle!");
         } else {
-          setWinner("opponent")
-          battleTurns.push("❌ You lost the battle!")
+          setWinner("opponent");
+          battleTurns.push("❌ You lost the battle!");
         }
 
-        setBattleLog(battleTurns)
-        setBattleState("complete")
+        setBattleLog(battleTurns);
+        setBattleState("complete");
 
         // Show results after a delay
         setTimeout(() => {
-          setShowResults(true)
-        }, 1500)
+          setShowResults(true);
+        }, 1500);
 
-        return
+        return;
       }
 
       // Player attack
       if ((playerFirst && turn % 2 === 1) || (!playerFirst && turn % 2 === 0)) {
         const damage = Math.max(
           5,
-          Math.floor(playerCharacter.attack * (Math.random() * 0.4 + 0.8) - opponentCharacter.defense * 0.5),
-        )
-        currentOpponentHealth = Math.max(0, currentOpponentHealth - damage)
-        setOpponentHealth(currentOpponentHealth)
-        battleTurns.push(`⚔️ ${playerCharacter.name} attacks for ${damage} damage!`)
+          Math.floor(
+            playerCharacter.attack * (Math.random() * 0.4 + 0.8) -
+              opponentCharacter.defense * 0.5
+          )
+        );
+        currentOpponentHealth = Math.max(0, currentOpponentHealth - damage);
+        setOpponentHealth(currentOpponentHealth);
+        battleTurns.push(
+          `⚔️ ${playerCharacter.name} attacks for ${damage} damage!`
+        );
       }
       // Opponent attack
       else {
         const damage = Math.max(
           5,
-          Math.floor(opponentCharacter.attack * (Math.random() * 0.4 + 0.8) - playerCharacter.defense * 0.5),
-        )
-        currentPlayerHealth = Math.max(0, currentPlayerHealth - damage)
-        setPlayerHealth(currentPlayerHealth)
-        battleTurns.push(`🛡️ ${opponentCharacter.name} attacks for ${damage} damage!`)
+          Math.floor(
+            opponentCharacter.attack * (Math.random() * 0.4 + 0.8) -
+              playerCharacter.defense * 0.5
+          )
+        );
+        currentPlayerHealth = Math.max(0, currentPlayerHealth - damage);
+        setPlayerHealth(currentPlayerHealth);
+        battleTurns.push(
+          `🛡️ ${opponentCharacter.name} attacks for ${damage} damage!`
+        );
       }
 
-      setBattleLog(battleTurns)
-      turn++
+      setBattleLog(battleTurns);
+      turn++;
 
       // Continue battle with delay
-      setTimeout(simulateTurn, 1000)
-    }
+      setTimeout(simulateTurn, 1000);
+    };
 
     // Start the turn simulation
-    setTimeout(simulateTurn, 1000)
-  }
+    setTimeout(simulateTurn, 1000);
+  };
 
   // Return to home/character selection
   const returnToHome = () => {
-    router.push("/")
-  }
+    router.push("/form_participants/dashboard");
+  };
 
   // Find new battle
   const findNewBattle = () => {
-    setPlayerHealth(100)
-    setOpponentHealth(100)
-    setBattleState("ready")
-    setWinner(null)
-    setShowResults(false)
-    setBattleLog([])
-  }
+    setPlayerHealth(100);
+    setOpponentHealth(100);
+    setBattleState("ready");
+    setWinner(null);
+    setShowResults(false);
+    setBattleLog([]);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-200 to-purple-300 text-purple-900 p-4">
@@ -143,8 +155,12 @@ export default function BattlePage() {
             <Sword className="mr-2 h-8 w-8 text-purple-600" />
             Battle Arena
           </h1>
-          <Badge variant="outline" className="text-lg px-4 py-2 bg-purple-100 border-purple-500 text-purple-800">
-            Arena Level: {Math.floor((playerCharacter.rank + opponentCharacter.rank) / 2)}
+          <Badge
+            variant="outline"
+            className="text-lg px-4 py-2 bg-purple-100 border-purple-500 text-purple-800"
+          >
+            Arena Level:{" "}
+            {Math.floor((playerCharacter.rank + opponentCharacter.rank) / 2)}
           </Badge>
         </div>
 
@@ -152,7 +168,11 @@ export default function BattlePage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               {/* Player Character */}
-              <CharacterCard character={playerCharacter} health={playerHealth} isPlayer={true} />
+              <CharacterCard
+                character={playerCharacter}
+                health={playerHealth}
+                isPlayer={true}
+              />
 
               {/* VS Divider */}
               <div className="hidden md:flex flex-col items-center justify-center">
@@ -165,13 +185,20 @@ export default function BattlePage() {
               </div>
 
               {/* Opponent Character */}
-              <CharacterCard character={opponentCharacter} health={opponentHealth} isPlayer={false} />
+              <CharacterCard
+                character={opponentCharacter}
+                health={opponentHealth}
+                isPlayer={false}
+              />
             </div>
 
             {/* Battle Animation */}
             {battleState === "fighting" && (
               <div className="mb-8">
-                <BattleAnimation playerHealth={playerHealth} opponentHealth={opponentHealth} />
+                <BattleAnimation
+                  playerHealth={playerHealth}
+                  opponentHealth={opponentHealth}
+                />
               </div>
             )}
 
@@ -185,12 +212,17 @@ export default function BattlePage() {
                 <div className="h-40 overflow-y-auto bg-purple-50 rounded-md p-3 border border-purple-200">
                   {battleLog.length > 0 ? (
                     battleLog.map((log, index) => (
-                      <p key={index} className="mb-1 animate-fadeIn text-purple-800">
+                      <p
+                        key={index}
+                        className="mb-1 animate-fadeIn text-purple-800"
+                      >
                         {log}
                       </p>
                     ))
                   ) : (
-                    <p className="text-purple-400">Battle will be logged here...</p>
+                    <p className="text-purple-400">
+                      Battle will be logged here...
+                    </p>
                   )}
                 </div>
               </div>
@@ -241,5 +273,5 @@ export default function BattlePage() {
         )}
       </div>
     </div>
-  )
+  );
 }

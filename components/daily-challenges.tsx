@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Trophy, XIcon as XP, Zap, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -14,45 +15,64 @@ interface Challenge {
     label: string;
   };
   completed: boolean;
+  link: string;
+  category: string;
 }
 
 export function DailyChallenges() {
-  // Sample daily challenges data - only showing 3
-  const dailyChallenges: Challenge[] = [
+  const [category, setCategory] = useState("general");
+
+  const allChallenges: Challenge[] = [
     {
       id: 1,
-      title: "Complete 3 Lessons",
-      description: "Finish 3 lessons in any course today",
-      reward: {
-        type: "xp",
-        amount: 50,
-        label: "XP",
-      },
+      title: "What do you Think About AI?",
+      description: "FYP Survey",
+      reward: { type: "xp", amount: 50, label: "XP" },
       completed: false,
+      link: "/surveys/quick",
+      category: "technology",
     },
     {
       id: 2,
-      title: "Perfect Score",
-      description: "Get 100% on any quiz or assessment",
-      reward: {
-        type: "badge",
-        amount: 1,
-        label: "Badge",
-      },
+      title: "Flawless Response",
+      description: "Submit a fully completed survey.",
+      reward: { type: "badge", amount: 1, label: "Badge" },
       completed: true,
+      link: "/surveys/featured",
+      category: "general",
     },
     {
       id: 3,
-      title: "Help a Peer",
-      description: "Answer a question in the community forum",
-      reward: {
-        type: "points",
-        amount: 25,
-        label: "Points",
-      },
+      title: "Support a Classmate",
+      description: "Take a peer survey.",
+      reward: { type: "points", amount: 25, label: "Points" },
       completed: false,
+      link: "/surveys/student",
+      category: "general",
+    },
+    {
+      id: 4,
+      title: "Medical Ethics Dilemma",
+      description: "Survey on patient rights.",
+      reward: { type: "xp", amount: 40, label: "XP" },
+      completed: false,
+      link: "/surveys/medical-ethics",
+      category: "medical",
+    },
+    {
+      id: 5,
+      title: "Tech Trends 2025",
+      description: "Help predict tech waves.",
+      reward: { type: "xp", amount: 30, label: "XP" },
+      completed: false,
+      link: "/surveys/tech-trends",
+      category: "technology",
     },
   ];
+
+  const filteredChallenges = allChallenges.filter(
+    (c) => c.category === category || c.category === "general"
+  );
 
   const getRewardIcon = (type: string) => {
     switch (type) {
@@ -67,21 +87,26 @@ export function DailyChallenges() {
     }
   };
 
-  const pendingChallenges = dailyChallenges.filter((c) => !c.completed).length;
-
   return (
     <div className="flex h-full flex-col">
+      {/* Dropdown for category selection */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-medium text-purple-600 dark:text-purple-300">
           Daily Challenges
         </h2>
-        <span className="rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-800 dark:bg-purple-800 dark:text-purple-100">
-          {pendingChallenges} pending
-        </span>
+        <select
+          className="rounded border px-2 py-1 text-sm dark:bg-purple-950 dark:text-white text-purple-600"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="general">General</option>
+          <option value="technology">Technology</option>
+          <option value="medical">Medical</option>
+        </select>
       </div>
 
       <div className="flex-1">
-        {dailyChallenges.map((challenge) => (
+        {filteredChallenges.map((challenge) => (
           <div
             key={challenge.id}
             className={`mb-3 rounded-lg border border-purple-100 p-3 transition-colors dark:border-purple-800 ${
@@ -122,16 +147,15 @@ export function DailyChallenges() {
         ))}
       </div>
 
-<Link href={"/form_participants/missions"}>
-<Button
-        className="mt-2 w-full justify-between bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600"
-        size="sm"
-      >
-        View All Challenges
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-</Link>
-      
+      <Link href={"/form_participants/missions"}>
+        <Button
+          className="mt-2 w-full justify-between bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600"
+          size="sm"
+        >
+          View main Challenges
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </Link>
     </div>
   );
 }
