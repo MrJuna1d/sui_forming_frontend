@@ -68,15 +68,16 @@ const Header = () => {
                 <div className="flex space-x-[45px] font-bold items-center justify-between text-xl">
                     <Link href={"/form_participants/rewards"}>
                         <p className={`transition-all duration-200 ${pathName === "/form_participants/rewards" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}> Rewards </p>
-                     
                     </Link>
 
                     <Link href={"/form_participants/trade"}>
-                        Trade
+                    <p className={`transition-all duration-200 ${pathName === "/form_participants/trade" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}>Trade</p>
+                      
                     </Link>
 
                     <Link href={"/form_participants/battle"}>
-                        Battle
+                    <p className={`transition-all duration-200 ${pathName === "/form_participants/battle" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}>Battle</p>
+                
                     </Link>
                 </div>
            </>
