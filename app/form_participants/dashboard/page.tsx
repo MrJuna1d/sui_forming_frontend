@@ -1,25 +1,28 @@
+"use client";
+
 import { Montserrat } from "next/font/google";
 import { Badge } from "@/components/ui/badge";
 import { DailyChallenges } from "@/components/daily-challenges";
 import { LevelPath } from "@/components/level-path";
 import Image from "next/image";
-
+import { useState } from "react";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function Dashboard() {
+  const [category, setCategory] = useState("Tech");
+  const [selectedAvatar, setSelectedAvatar] = useState("/avatar.png");
   return (
     <main
       className={`min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 ${montserrat.className}`}
     >
       {/* Top Navigation */}
-   
-        <div className="container mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold text-purple-800 dark:text-purple-300 mt-10">
-            Participant Dashboard
-          </h1>
-        </div>
- 
+
+      <div className="container mx-auto flex items-center justify-between">
+        <h1 className="text-xl font-bold text-purple-800 dark:text-purple-300 mt-10">
+          Participant Dashboard
+        </h1>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
@@ -64,14 +67,40 @@ export default function Dashboard() {
                   Rank: #1
                 </h3>
               </div>
-              {/* Avatar Image */}
-              <Image src={"/avatar.png"} alt="avatar" className="mb-4" width={250} height={250} />
+
+              {/* Main Avatar Image */}
+              <Image
+                src={selectedAvatar}
+                alt="avatar"
+                className="mb-4 rounded-full"
+                width={150}
+                height={150}
+              />
 
               {/* Avatar Editing Options */}
               <div className="grid grid-cols-3 gap-4">
-                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                <button
+                  onClick={() => setSelectedAvatar("/avatar.png")}
+                  className="h-12 w-12 overflow-hidden rounded-full ring-2 ring-transparent hover:ring-purple-500"
+                >
+                  <Image
+                    src="/avatar.png"
+                    alt="Avatar 1"
+                    width={200}
+                    height={200}
+                  />
+                </button>
+                <button
+                  onClick={() => setSelectedAvatar("/avatar level2.png")}
+                  className="h-12 w-12 overflow-hidden rounded-full ring-2 ring-transparent hover:ring-purple-500"
+                >
+                  <Image
+                    src="/avatar level2.png"
+                    alt="Avatar 2"
+                    width={200}
+                    height={200}
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -82,7 +111,7 @@ export default function Dashboard() {
           <h2 className="mb-6 text-2xl font-bold text-purple-800 dark:text-purple-300">
             Your Level Journey
           </h2>
-          <LevelPath currentLevel={42} />
+          <LevelPath currentLevel={5} />
         </section>
 
         {/* Recent Achievements */}

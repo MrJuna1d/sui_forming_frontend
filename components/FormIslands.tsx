@@ -1,18 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import FormDetails from "./FormDetails"
-import { FileText, Users, Star, Stethoscope, Cpu, Sparkles, Flag, ArrowRight } from "lucide-react"
-import FloatingElements from "./FloatingElements"
-import Link from "next/link"
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import FormDetails from "./FormDetails";
+import {
+  FileText,
+  Users,
+  Star,
+  Stethoscope,
+  Cpu,
+  Sparkles,
+  Flag,
+  ArrowRight,
+} from "lucide-react";
+import FloatingElements from "./FloatingElements";
+import Link from "next/link";
 
 // Form templates data - now in sequential order
 const formTemplates = [
   {
     id: 1,
-    title: "User Registration",
-    description: "A magical portal to register new adventurers in the realm",
+    title: "Recruitment Survey",
+    description:
+      "Help a researcher gather profiles of brave new participants for their study.",
     icon: <FileText className="h-8 w-8 text-purple-200" />,
     position: { x: 15, y: 30 },
     category: "personal",
@@ -23,8 +33,9 @@ const formTemplates = [
   },
   {
     id: 2,
-    title: "Profile Builder",
-    description: "Craft your legend with this enchanted profile creator",
+    title: "Demographic Builder",
+    description:
+      "Answer key questions to help scholars understand different walks of life.",
     icon: <Users className="h-8 w-8 text-purple-200" />,
     position: { x: 30, y: 20 },
     category: "personal",
@@ -35,8 +46,9 @@ const formTemplates = [
   },
   {
     id: 3,
-    title: "Healing Scroll",
-    description: "Ancient medical parchment for recording ailments",
+    title: "Medical Insight Form",
+    description:
+      "Assist in a study uncovering healthcare trends with your answers.",
     icon: <Stethoscope className="h-8 w-8 text-purple-200" />,
     position: { x: 45, y: 35 },
     category: "medicine",
@@ -47,8 +59,9 @@ const formTemplates = [
   },
   {
     id: 4,
-    title: "Arcane Specs",
-    description: "Document the specifications of your magical artifacts",
+    title: "Tech Usage Survey",
+    description:
+      "Provide data for a wizard researching the spread of magical tech tools.",
     icon: <Cpu className="h-8 w-8 text-purple-200" />,
     position: { x: 60, y: 25 },
     category: "technology",
@@ -59,8 +72,9 @@ const formTemplates = [
   },
   {
     id: 5,
-    title: "Feedback Scroll",
-    description: "Capture the whispers and thoughts of other travelers",
+    title: "User Feedback Scroll",
+    description:
+      "Rate your journey and share experiences to help future travelers.",
     icon: <Star className="h-8 w-8 text-purple-200" />,
     position: { x: 75, y: 40 },
     category: "business",
@@ -69,7 +83,7 @@ const formTemplates = [
     glow: "bg-amber-500/30",
     step: 5,
   },
-]
+];
 
 // Final destination island
 const finalDestination = {
@@ -82,51 +96,53 @@ const finalDestination = {
   color: "from-yellow-500 to-red-700",
   glow: "bg-yellow-500/40",
   step: 6,
-}
+};
 
 export default function FormIslands() {
-  const [selectedForm, setSelectedForm] = useState<number | null>(null)
-  const [recentlyUsed, setRecentlyUsed] = useState<number[]>([])
-  const [hoveredIsland, setHoveredIsland] = useState<number | null>(null)
-  const mapRef = useRef<HTMLDivElement>(null)
+  const [selectedForm, setSelectedForm] = useState<number | null>(null);
+  const [recentlyUsed, setRecentlyUsed] = useState<number[]>([]);
+  const [hoveredIsland, setHoveredIsland] = useState<number | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
 
   // Toggle form details
   const toggleFormDetails = (formId: number) => {
-    setSelectedForm(selectedForm === formId ? null : formId)
-  }
+    setSelectedForm(selectedForm === formId ? null : formId);
+  };
 
   // Handle using a form
   const handleUseForm = (formId: number) => {
     // In a real app, this would navigate to the form or start it
     alert(
       `Using magical template: ${
-        formId === finalDestination.id ? finalDestination.title : formTemplates.find((f) => f.id === formId)?.title
-      }`,
-    )
+        formId === finalDestination.id
+          ? finalDestination.title
+          : formTemplates.find((f) => f.id === formId)?.title
+      }`
+    );
 
     // Add to recently used if not already there
     if (!recentlyUsed.includes(formId)) {
-      setRecentlyUsed([formId, ...recentlyUsed].slice(0, 3)) // Keep only the 3 most recent
+      setRecentlyUsed([formId, ...recentlyUsed].slice(0, 3)); // Keep only the 3 most recent
     }
 
-    setSelectedForm(null)
-  }
+    setSelectedForm(null);
+  };
 
   // Generate SVG path points for the journey line
   const generatePathPoints = () => {
     // Start with the first island
-    let pathPoints = `M ${formTemplates[0].position.x}% ${formTemplates[0].position.y}%`
+    let pathPoints = `M ${formTemplates[0].position.x}% ${formTemplates[0].position.y}%`;
 
     // Add points for each island
     for (let i = 1; i < formTemplates.length; i++) {
-      pathPoints += ` L ${formTemplates[i].position.x}% ${formTemplates[i].position.y}%`
+      pathPoints += ` L ${formTemplates[i].position.x}% ${formTemplates[i].position.y}%`;
     }
 
     // Add final destination
-    pathPoints += ` L ${finalDestination.position.x}% ${finalDestination.position.y}%`
+    pathPoints += ` L ${finalDestination.position.x}% ${finalDestination.position.y}%`;
 
-    return pathPoints
-  }
+    return pathPoints;
+  };
 
   return (
     <div className="space-y-8">
@@ -141,25 +157,28 @@ export default function FormIslands() {
           <div className="flex flex-wrap gap-3">
             {recentlyUsed.map((formId) => {
               const form =
-                formId === finalDestination.id ? finalDestination : formTemplates.find((f) => f.id === formId)
+                formId === finalDestination.id
+                  ? finalDestination
+                  : formTemplates.find((f) => f.id === formId);
 
-              if (!form) return null
+              if (!form) return null;
 
               return (
-                <Link href = "/form_participants/missions/challenge">
-                    <motion.button
-                  key={form.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`px-4 py-2 rounded-lg bg-gradient-to-br ${form.color} text-white font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2`}
-                  onClick={() => toggleFormDetails(form.id)}
-                >
-                  <div className="p-1 bg-white/20 rounded-full">{form.icon}</div>
-                  {form.title} 
-                </motion.button>
+                <Link href="/form_participants/missions/challenge">
+                  <motion.button
+                    key={form.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-4 py-2 rounded-lg bg-gradient-to-br ${form.color} text-white font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2`}
+                    onClick={() => toggleFormDetails(form.id)}
+                  >
+                    <div className="p-1 bg-white/20 rounded-full">
+                      {form.icon}
+                    </div>
+                    {form.title}
+                  </motion.button>
                 </Link>
-                
-              )
+              );
             })}
           </div>
         </div>
@@ -188,8 +207,18 @@ export default function FormIslands() {
             </linearGradient>
 
             {/* Arrow marker for the path */}
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255, 255, 255, 0.8)" />
+            <marker
+              id="arrowhead"
+              markerWidth="10"
+              markerHeight="7"
+              refX="0"
+              refY="3.5"
+              orient="auto"
+            >
+              <polygon
+                points="0 0, 10 3.5, 0 7"
+                fill="rgba(255, 255, 255, 0.8)"
+              />
             </marker>
           </defs>
 
@@ -216,17 +245,23 @@ export default function FormIslands() {
             markerMid="url(#arrowhead)"
             markerEnd="url(#arrowhead)"
           >
-            <animate attributeName="stroke-dashoffset" from="0" to="25" dur="1s" repeatCount="indefinite" />
+            <animate
+              attributeName="stroke-dashoffset"
+              from="0"
+              to="25"
+              dur="1s"
+              repeatCount="indefinite"
+            />
           </path>
         </svg>
 
         {/* Direction arrows along the path */}
         {formTemplates.map((form, index) => {
-          if (index === formTemplates.length - 1) return null
+          if (index === formTemplates.length - 1) return null;
 
-          const nextForm = formTemplates[index + 1]
-          const midX = (form.position.x + nextForm.position.x) / 2
-          const midY = (form.position.y + nextForm.position.y) / 2
+          const nextForm = formTemplates[index + 1];
+          const midX = (form.position.x + nextForm.position.x) / 2;
+          const midY = (form.position.y + nextForm.position.y) / 2;
 
           return (
             <motion.div
@@ -251,7 +286,7 @@ export default function FormIslands() {
                 <ArrowRight className="h-5 w-5 text-white" />
               </div>
             </motion.div>
-          )
+          );
         })}
 
         {/* Regular islands */}
@@ -286,7 +321,8 @@ export default function FormIslands() {
               }}
               transition={{
                 duration: 2,
-                repeat: hoveredIsland === form.id ? Number.POSITIVE_INFINITY : 0,
+                repeat:
+                  hoveredIsland === form.id ? Number.POSITIVE_INFINITY : 0,
                 repeatType: "reverse",
               }}
             ></motion.div>
@@ -307,7 +343,8 @@ export default function FormIslands() {
               }}
               transition={{
                 duration: 2,
-                repeat: hoveredIsland === form.id ? Number.POSITIVE_INFINITY : 0,
+                repeat:
+                  hoveredIsland === form.id ? Number.POSITIVE_INFINITY : 0,
                 repeatType: "reverse",
               }}
             >
@@ -323,7 +360,9 @@ export default function FormIslands() {
               <div className="p-4 rounded-full bg-white/20 backdrop-blur-sm mb-2 border border-white/30 shadow-inner">
                 {form.icon}
               </div>
-              <h3 className="text-base font-bold text-center text-white px-2">{form.title}</h3>
+              <h3 className="text-base font-bold text-center text-white px-2">
+                {form.title}
+              </h3>
             </motion.div>
           </motion.div>
         ))}
@@ -353,8 +392,14 @@ export default function FormIslands() {
           <motion.div
             className={`absolute -inset-10 rounded-full ${finalDestination.glow} blur-xl z-0 opacity-80`}
             animate={{
-              scale: hoveredIsland === finalDestination.id ? [1, 1.3, 1] : [1, 1.1, 1],
-              opacity: hoveredIsland === finalDestination.id ? [0.8, 1, 0.8] : [0.7, 0.9, 0.7],
+              scale:
+                hoveredIsland === finalDestination.id
+                  ? [1, 1.3, 1]
+                  : [1, 1.1, 1],
+              opacity:
+                hoveredIsland === finalDestination.id
+                  ? [0.8, 1, 0.8]
+                  : [0.7, 0.9, 0.7],
             }}
             transition={{
               duration: 3,
@@ -406,8 +451,12 @@ export default function FormIslands() {
             <div className="p-5 rounded-full bg-white/20 backdrop-blur-sm mb-3 border border-white/30 shadow-inner">
               {finalDestination.icon}
             </div>
-            <h3 className="text-xl font-bold text-center text-white px-2">{finalDestination.title}</h3>
-            <p className="text-xs text-white/80 text-center mt-1 px-4">Complete all challenges to unlock</p>
+            <h3 className="text-xl font-bold text-center text-white px-2">
+              {finalDestination.title}
+            </h3>
+            <p className="text-xs text-white/80 text-center mt-1 px-4">
+              Complete all challenges to unlock
+            </p>
           </motion.div>
         </motion.div>
 
@@ -428,5 +477,5 @@ export default function FormIslands() {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }

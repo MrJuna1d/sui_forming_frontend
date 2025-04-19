@@ -1,6 +1,6 @@
 "use client";
 import { ConnectButton, useWallet } from "@suiet/wallet-kit";
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Link from "next/link";
@@ -9,13 +9,18 @@ import { usePathname } from "next/navigation";
 const Header = () => {
   const wallet = useWallet();
   const router = useRouter();
-  const [loginType, setLoginType] = useState<"creator" | "participant" | null>(null);
+  const [loginType, setLoginType] = useState<"creator" | "participant" | null>(
+    null
+  );
   const [walletStatus, setWalletStatus] = useState<string | null>(null);
   const pathName = usePathname();
 
   // Load from localStorage on mount
   useEffect(() => {
-    const storedType = localStorage.getItem("loginType") as "creator" | "participant" | null;
+    const storedType = localStorage.getItem("loginType") as
+      | "creator"
+      | "participant"
+      | null;
     const storedStatus = localStorage.getItem("walletStatus");
 
     if (storedType) {
@@ -43,6 +48,7 @@ const Header = () => {
         router.push("/form_participants/dashboard");
       }
     }
+
     if (wallet.status !== "connected") {
       router.push("/");
     }
@@ -56,32 +62,54 @@ const Header = () => {
   return (
     <header className="top-0 left-0 w-full transparent z-50">
       <div className="flex justify-between px-5 py-5">
-        <Link href={"/form_participants/dashbboard"}>
-         <div>
-          <h1 className="font-bold text-3xl">📜 FormCraft</h1>
-        </div>
+        <Link href={"/"}>
+          <div>
+            <h1 className="font-bold text-3xl">📜 FormCraft</h1>
+          </div>
         </Link>
-       
 
         {wallet.status === "connected" && loginType === "participant" && (
-           <>
-                <div className="flex space-x-[45px] font-bold items-center justify-between text-xl">
-                    <Link href={"/form_participants/rewards"}>
-                        <p className={`transition-all duration-200 ${pathName === "/form_participants/rewards" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}> Rewards </p>
-                    </Link>
+          <>
+            <div className="flex space-x-[45px] font-bold items-center justify-between text-xl">
+              <Link href={"/form_participants/rewards"}>
+                <p
+                  className={`transition-all duration-200 ${
+                    pathName === "/form_participants/rewards"
+                      ? "underline underline-offset-4 text-blue-600 decoration-blue-600"
+                      : "text-gray-700 hover:text-blue-500"
+                  }`}
+                >
+                  {" "}
+                  Rewards{" "}
+                </p>
+              </Link>
 
-                    <Link href={"/form_participants/trade"}>
-                    <p className={`transition-all duration-200 ${pathName === "/form_participants/trade" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}>Trade</p>
-                      
-                    </Link>
+              <Link href={"/form_participants/trade"}>
+                <p
+                  className={`transition-all duration-200 ${
+                    pathName === "/form_participants/trade"
+                      ? "underline underline-offset-4 text-blue-600 decoration-blue-600"
+                      : "text-gray-700 hover:text-blue-500"
+                  }`}
+                >
+                  Trade
+                </p>
+              </Link>
 
-                    <Link href={"/form_participants/battle"}>
-                    <p className={`transition-all duration-200 ${pathName === "/form_participants/battle" ? "underline underline-offset-4 text-blue-600 decoration-blue-600" : "text-gray-700 hover:text-blue-500"}`}>Battle</p>
-                
-                    </Link>
-                </div>
-           </>
-          )}
+              <Link href={"/form_participants/battle"}>
+                <p
+                  className={`transition-all duration-200 ${
+                    pathName === "/form_participants/battle"
+                      ? "underline underline-offset-4 text-blue-600 decoration-blue-600"
+                      : "text-gray-700 hover:text-blue-500"
+                  }`}
+                >
+                  Battle
+                </p>
+              </Link>
+            </div>
+          </>
+        )}
 
         <div className="flex space-x-5">
           {wallet.status !== "connected" && (
@@ -100,8 +128,6 @@ const Header = () => {
               </div>
             </>
           )}
-
-           
 
           {wallet.status === "connected" && loginType === "creator" && (
             <ConnectButton

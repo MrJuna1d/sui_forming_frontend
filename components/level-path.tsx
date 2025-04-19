@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import Image from "next/image";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -21,6 +22,7 @@ interface LevelPerk {
   title: string;
   description: string;
   icon: React.ReactNode;
+  image?: string;
 }
 
 interface LevelPathProps {
@@ -44,6 +46,7 @@ export function LevelPath({ currentLevel }: LevelPathProps) {
       description:
         "Unlock a special profile badge to show off your dedication.",
       icon: <Award className="h-6 w-6 text-yellow-500" />,
+      image: "/avatarLevel3.png",
     },
     {
       level: 15,
@@ -215,6 +218,19 @@ export function LevelPath({ currentLevel }: LevelPathProps) {
               >
                 {perk.description}
               </p>
+
+              {/* Image for Level 10 */}
+              {perk.image && (
+                <div className="mt-4 flex justify-center">
+                  <Image
+                    src={perk.image}
+                    alt="Character"
+                    width={50}
+                    height={50}
+                    className="rounded-lg object-cover"
+                  />
+                </div>
+              )}
 
               {/* Visual Indicator for Achieved Perks */}
               {isAchieved && (
