@@ -55,6 +55,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Link from "next/link";
 
 export default function SurveyDashboard() {
   const [page, setPage] = useState(1);
@@ -300,10 +301,12 @@ export default function SurveyDashboard() {
         </Card>
 
         <div className="mt-6 flex flex-wrap gap-4">
-          <Button className="flex items-center gap-2">
+            <Link href={"/form_creator/createform"}>
+            <Button className="flex items-center gap-2">
             <FilePlus className="h-4 w-4" />
             Create New Survey
           </Button>
+            </Link>
           <Button variant="outline" className="flex items-center gap-2">
             <Edit className="h-4 w-4" />
             Edit Existing Survey
