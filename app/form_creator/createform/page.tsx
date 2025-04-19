@@ -9,7 +9,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronRight, ChevronLeft, Check, Sparkles, Loader2 } from "lucide-react"
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { createOpenAI, openai } from "@ai-sdk/openai"
+import { OpenAI } from 'openai';
+
 
 const CreateForm = () => {
   const [step, setStep] = useState(0)
@@ -132,84 +134,81 @@ const CreateForm = () => {
   )
 }
 
-const FormBuilder = ({ formData }: { formData: any }) => {
-  const [questions, setQuestions] = useState<
-    Array<{
-      id: string
-      type: string
-      question: string
-      options?: string[]
-    }>
-  >([])
-  const [newQuestion, setNewQuestion] = useState("")
-  const [questionType, setQuestionType] = useState("text")
-  const [options, setOptions] = useState("")
-  const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
-  const [isGenerating, setIsGenerating] = useState(false)
-
-  const addQuestion = () => {
-    if (newQuestion.trim() === "") return
-
-    const parsedOptions =
-      questionType === "multiple-choice"
-        ? options
-            .split(",")
-            .map((opt) => opt.trim())
-            .filter((opt) => opt !== "")
-        : undefined
-
-    setQuestions([
-      ...questions,
-      {
-        id: Date.now().toString(),
-        type: questionType,
-        question: newQuestion,
-        options: parsedOptions,
-      },
-    ])
-
-    // Reset form
-    setNewQuestion("")
-    setOptions("")
-  }
-
-  const generateSuggestions = async () => {
-    setIsGenerating(true)
-    try {
-      const prompt = `
-        I'm creating a form with the following details:
-        Purpose: ${formData.purpose}
-        Target audience: ${formData.audience}
-        Information types needed: ${formData.informationTypes}
-        Age group/demographic: ${formData.ageGroup}
-        
-        Based on this information, suggest 5 relevant questions I should include in my form.
-        Format your response as a numbered list with just the questions, no explanations.
-      `
-
-      const { text } = await generateText({
-        model: openai("gpt-4o"),
-        prompt,
-      })
-
-      // Parse the numbered list into an array of questions
-      const suggestions = text
-        .split("\n")
-        .filter((line: any) => /^\d+\./.test(line))
-        .map((line: any) => line.replace(/^\d+\.\s*/, "").trim())
-
-      setAiSuggestions(suggestions)
-    } catch (error) {
-      console.error("Error generating suggestions:", error)
-    } finally {
-      setIsGenerating(false)
-    }
-  }
-
-  const addSuggestedQuestion = (question: string) => {
-    setNewQuestion(question)
-  }
-
+const FormBuilder = ({ formData }: { formData: any }) => { 
+ 
+  
+    const [questions, setQuestions] = useState<
+      Array<{ 
+        id: string 
+        type: string 
+        question: string 
+        options?: string[] 
+      }> 
+    >([]); 
+    const [newQuestion, setNewQuestion] = useState(""); 
+    const [questionType, setQuestionType] = useState("text"); 
+    const [options, setOptions] = useState(""); 
+    const [aiSuggestions, setAiSuggestions] = useState({
+        response: "", // Store the entire response as a single string
+      });
+    const [isGenerating, setIsGenerating] = useState(false); 
+   
+    const addQuestion = () => { 
+      if (newQuestion.trim() === "") return; 
+   
+      const parsedOptions = 
+        questionType === "multiple-choice" 
+          ? options 
+              .split(",") 
+              .map((opt) => opt.trim()) 
+              .filter((opt) => opt !== "") 
+          : undefined; 
+   
+      setQuestions([ 
+        ...questions, 
+        { 
+          id: Date.now().toString(), 
+          type: questionType, 
+          question: newQuestion, 
+          options: parsedOptions, 
+        }, 
+      ]); 
+   
+      // Reset form 
+      setNewQuestion(""); 
+      setOptions(""); 
+    }; 
+   
+    const generateSuggestions = async () => { 
+        setIsGenerating(true); 
+        try { 
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formData }), // Ensure formData is being passed correctly
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to generate suggestions');
+            }
+    
+            const data = await response.json();
+            console.log('Generated data:', data); // Log the data received from the API
+            
+            // Check if the response contains the expected structure
+            if (data.response) {
+                setAiSuggestions({ response: data.response }); // Store the full response
+            } else {
+                console.error('Unexpected response structure:', data); // Log any unexpected response structure
+            }
+        } catch (error) { 
+            console.error("Error generating suggestions:", error); 
+        } finally { 
+            setIsGenerating(false); 
+        } 
+    };
   return (
     <div className="container mx-auto py-8 px-4">
       <Card className="mb-8">
@@ -266,36 +265,24 @@ const FormBuilder = ({ formData }: { formData: any }) => {
           </Button>
         </CardHeader>
         <CardContent>
-          {aiSuggestions.length > 0 ? (
-            <div className="space-y-3">
-              <h3 className="text-sm font-medium">Suggested Questions:</h3>
-              <div className="grid gap-2">
-                {aiSuggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 border rounded-md bg-gray-50 hover:bg-gray-100"
-                  >
-                    <p className="text-sm">{suggestion}</p>
-                    <Button variant="ghost" size="sm" onClick={() => addSuggestedQuestion(suggestion)}>
-                      Use
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-6 text-gray-500">
-              {isGenerating ? (
-                <div className="flex flex-col items-center">
-                  <Loader2 className="h-8 w-8 animate-spin mb-2" />
-                  <p>Generating smart suggestions based on your form requirements...</p>
-                </div>
-              ) : (
-                <p>Click "Generate Suggestions" to get AI-powered question ideas for your form.</p>
-              )}
-            </div>
-          )}
-        </CardContent>
+  {aiSuggestions.response ? (
+    <div className="space-y-3">
+      <h3 className="text-sm font-medium">AI Response:</h3>
+      <p className="text-sm text-gray-700">{aiSuggestions.response}</p>
+    </div>
+  ) : (
+    <div className="text-center py-6 text-gray-500">
+      {isGenerating ? (
+        <div className="flex flex-col items-center">
+          <Loader2 className="h-8 w-8 animate-spin mb-2" />
+          <p>Generating smart suggestions based on your form requirements...</p>
+        </div>
+      ) : (
+        <p>Click "Generate Suggestions" to get AI-powered question ideas for your form.</p>
+      )}
+    </div>
+  )}
+</CardContent>
       </Card>
 
       <Card className="mb-8">
