@@ -3,7 +3,6 @@ import { ConnectButton, useWallet } from "@suiet/wallet-kit";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Button } from "./ui/button";
 
 const Header = () => {
   const wallet = useWallet();
@@ -20,9 +19,6 @@ const Header = () => {
         router.push("/form_participants/dashboard");
       }
     }
-    if(wallet.status !== "connected"){
-        router.push("/")
-    }
   }, [wallet.status, loginType]);
   return (
     <header className="top-0 left-0 w-full transparent z-50">
@@ -30,18 +26,6 @@ const Header = () => {
         <div>
           <h1 className="font-bold text-3xl">📜 FormCraft</h1>
         </div>
-
-        {wallet.status === "connected" && loginType === "creator" && (
-            <>
-            <div className="space-x-7">
-                Hello
-                Robert
-            </div>
-            </>
-          )}
-
-
-
         <div className="flex space-x-5">
           {wallet.status !== "connected" && (
             <>
@@ -68,7 +52,7 @@ const Header = () => {
             />
           )}
 
-        {wallet.status === "connected" && loginType === "participant" && (
+          {wallet.status === "connected" && loginType === "participant" && (
             <ConnectButton
               label="Creator Connected"
               className="w-[250px] bg-blue-600 text-white"
