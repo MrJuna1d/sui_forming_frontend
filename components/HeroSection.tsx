@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText, Users } from "lucide-react";
 import Image from "next/image";
-import character from "@/components/character.png";
+
 
 export default function HeroSection() {
   return (
@@ -133,7 +133,7 @@ export default function HeroSection() {
         {/* Character Image Section */}
         <div className="relative mt-[110px] mr-[50px] hidden w-[500px] lg:block">
           <Image
-            src={character}
+            src={"/character.png"}
             alt="FormCraft Character"
             className="w-full object-contain"
           />

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { DailyChallenges } from "@/components/daily-challenges";
 import { LevelPath } from "@/components/level-path";
 import Image from "next/image";
-import avatar from "@/components/avatar.png";
+
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -13,13 +13,13 @@ export default function Dashboard() {
       className={`min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 ${montserrat.className}`}
     >
       {/* Top Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 px-4 py-3 backdrop-blur-md dark:bg-purple-950/80">
+   
         <div className="container mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold text-purple-800 dark:text-purple-300">
+          <h1 className="text-xl font-bold text-purple-800 dark:text-purple-300 mt-10">
             Participant Dashboard
           </h1>
         </div>
-      </nav>
+ 
 
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
@@ -65,7 +65,7 @@ export default function Dashboard() {
                 </h3>
               </div>
               {/* Avatar Image */}
-              <Image src={avatar} alt="avatar" className="mb-4" />
+              <Image src={"/avatar.png"} alt="avatar" className="mb-4" width={250} height={250} />
 
               {/* Avatar Editing Options */}
               <div className="grid grid-cols-3 gap-4">
