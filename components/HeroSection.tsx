@@ -136,6 +136,8 @@ export default function HeroSection() {
             src={"/character.png"}
             alt="FormCraft Character"
             className="w-full object-contain"
+            width={200}
+            height={200}
           />
         </div>
       </div>

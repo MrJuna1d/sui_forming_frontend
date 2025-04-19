@@ -2,6 +2,7 @@
 
 import { Trophy, XIcon as XP, Zap, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Challenge {
   id: number;
@@ -121,13 +122,16 @@ export function DailyChallenges() {
         ))}
       </div>
 
-      <Button
+<Link href={"/form_participants/missions"}>
+<Button
         className="mt-2 w-full justify-between bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600"
         size="sm"
       >
         View All Challenges
         <ChevronRight className="h-4 w-4" />
       </Button>
+</Link>
+      
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Trophy, Star, ArrowUp, Zap, RotateCw } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import confetti from "canvas-confetti";
+import Link from "next/link"
 
 interface Character {
   name: string
@@ -184,6 +185,7 @@ export default function BattleResults({
             Try Again
           </Button>
 
+        <Link href={"/form_participants/dashboard"}>
           <Button
             variant="outline"
             size="lg"
@@ -192,6 +194,7 @@ export default function BattleResults({
           >
             Return to Home
           </Button>
+          </Link>
         </div>
       </Card>
     )
