@@ -9,7 +9,7 @@ export const useMoveCalls = () => {
     url: getFullnodeUrl("testnet")
   });
 
-  const { signAndExecuteTransactionBlock, account } = useWallet();
+  const { signAndExecuteTransaction, account } = useWallet();
   const packageObjectId = '0x69dd51b6dfc243004a82f83dc51d974e6db518c599a8f0418c2a138732eb7a88';
 
   const createForm = async ({
@@ -53,7 +53,7 @@ export const useMoveCalls = () => {
 
       const questionVector = tx.makeMoveVec({
         elements: questionObjs,
-        type: 'object',
+        type: `${packageObjectId}::forms::Question`,
       });
 
       const form = tx.moveCall({
@@ -69,13 +69,9 @@ export const useMoveCalls = () => {
 
       tx.transferObjects([form], tx.pure.address(account.address));
 
-      const result = await signAndExecuteTransactionBlock({
-        transactionBlock: tx,
-        options: {
-          showObjectChanges: true,
-          showEffects: true,
-        },
-      });
+      const result = await signAndExecuteTransaction({
+        transaction: tx,
+      },{});
 
       console.log('✅ Form created:', result);
       return result;

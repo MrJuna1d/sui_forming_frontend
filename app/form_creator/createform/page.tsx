@@ -24,6 +24,8 @@ import {
 import { generateText } from "ai";
 import { createOpenAI, openai } from "@ai-sdk/openai";
 import { OpenAI } from "openai";
+import Link from "next/link";
+import {useMoveCalls} from "@/hooks/useMoveCalls";
 
 const CreateForm = () => {
   const [step, setStep] = useState(0);
@@ -155,6 +157,7 @@ const CreateForm = () => {
 };
 
 const FormBuilder = ({ formData }: { formData: any }) => {
+  const { createForm } = useMoveCalls();
   const [questions, setQuestions] = useState<
     Array<{
       id: string;
@@ -170,6 +173,7 @@ const FormBuilder = ({ formData }: { formData: any }) => {
     response: "", // Store the entire response as a single string
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const addQuestion = () => {
     if (newQuestion.trim() === "") return;
@@ -195,6 +199,25 @@ const FormBuilder = ({ formData }: { formData: any }) => {
     // Reset form
     setNewQuestion("");
     setOptions("");
+  };
+
+  const handleSubmit = async () => {
+    if (!formData || questions.length === 0) {
+      alert("Please fill in the form and add at least one question.");
+      return;
+    }
+  
+    try {
+      await createForm({
+        ...formData, // includes purpose, audience, etc.
+        questions,   // your full question list
+      });
+  
+      setShowSuccess(true);
+      setQuestions([]); // optional: reset questions
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const generateSuggestions = async () => {
@@ -433,9 +456,15 @@ const FormBuilder = ({ formData }: { formData: any }) => {
           )}
         </CardContent>
         <CardFooter>
-          <Button className="w-full" disabled={questions.length === 0}>
+      
+        <Button
+            className="w-full"
+            disabled={questions.length === 0}
+            onClick={handleSubmit} 
+          >
             Save Form
           </Button>
+         
         </CardFooter>
         {showSuccess && (
           <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-md transition-all z-50">
