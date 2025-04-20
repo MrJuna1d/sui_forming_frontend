@@ -26,4 +26,4 @@ hooks/useMoveCalls.ts
 The part where the creator uploads a survey to the smart contract can be found in:
 app/form_creator/createform/page.tsx
 
-In "app/form_creator/createform/page.tsx" you can go to line 160 to see where the hook is used.
+In "app/form_creator/createform/page.tsx" you can go to line 160 to see how the hook is used.
