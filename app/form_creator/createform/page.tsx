@@ -170,6 +170,7 @@ const FormBuilder = ({ formData }: { formData: any }) => {
     response: "", // Store the entire response as a single string
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const addQuestion = () => {
     if (newQuestion.trim() === "") return;
@@ -433,7 +434,14 @@ const FormBuilder = ({ formData }: { formData: any }) => {
           )}
         </CardContent>
         <CardFooter>
-          <Button className="w-full" disabled={questions.length === 0}>
+          <Button
+            className="w-full"
+            disabled={questions.length === 0}
+            onClick={() => {
+              setShowSuccess(true);
+              setTimeout(() => setShowSuccess(false), 2000); // hide after 2 seconds
+            }}
+          >
             Save Form
           </Button>
         </CardFooter>
