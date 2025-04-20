@@ -15,3 +15,15 @@ We built a platform where anyone can create surveys on-chain using Sui. When som
 Smart Contract Github Link:
 https://github.com/KwanJunEr/sui_forming_backend.git
 
+## 🧠 Frontend Interaction with the Smart Contract
+To see exactly how the frontend communicates with the Smart Contract, check the following files:
+
+- 📄 Smart Contract Calls:
+The logic for interacting with the smart contract (e.g., upload, read, etc.) is handled in the file:
+hooks/useMoveCalls.ts
+
+- 📤 Survey Upload (by Creator):
+The part where the creator uploads a survey to the smart contract can be found in:
+app/form_creator/createform/page.tsx
+
+In "app/form_creator/createform/page.tsx" you can go to line 160 to see how the hook is used.
