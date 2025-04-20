@@ -6,8 +6,12 @@ We built a platform where anyone can create surveys on-chain using Sui. When som
 
 
 
+
 ## Tech Stack
 ![TechS Tack](https://github.com/user-attachments/assets/f1ed70df-3261-45c9-9e83-fdd76e5bb670)
+
+⚠️ **Disclaimer:**  
+To enable the Gemini API functionality, please insert your own API key in the `.env` file.
 
 ## Smart Contract Deployed
 ![smartContractDeployed](https://github.com/user-attachments/assets/6849856f-fb16-4932-88ba-405fe9888737)
