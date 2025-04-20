@@ -11,9 +11,11 @@ import { ChevronRight, ChevronLeft, Check, Sparkles, Loader2 } from "lucide-reac
 import { generateText } from "ai"
 import { createOpenAI, openai } from "@ai-sdk/openai"
 import { OpenAI } from 'openai';
+import { useMoveCalls } from "@/hooks/useMoveCalls";
 
 
 const CreateForm = () => {
+  const { createForm } = useMoveCalls();
   const [step, setStep] = useState(0)
   const [formData, setFormData] = useState({
     purpose: "",
@@ -21,6 +23,7 @@ const CreateForm = () => {
     informationTypes: "",
     ageGroup: "",
   })
+
 
   const [showFormBuilder, setShowFormBuilder] = useState(false)
 
@@ -135,8 +138,15 @@ const CreateForm = () => {
 }
 
 const FormBuilder = ({ formData }: { formData: any }) => { 
- 
-  
+    
+    const { createForm } = useMoveCalls();
+
+    const handleSubmit = () => {
+      createForm({
+        ...formData,
+        questions,
+      });
+    };
     const [questions, setQuestions] = useState<
       Array<{ 
         id: string 
@@ -380,7 +390,7 @@ const FormBuilder = ({ formData }: { formData: any }) => {
           )}
         </CardContent>
         <CardFooter>
-          <Button className="w-full" disabled={questions.length === 0}>
+          <Button onClick={handleSubmit} className="w-full" disabled={questions.length === 0}>
             Save Form
           </Button>
         </CardFooter>
