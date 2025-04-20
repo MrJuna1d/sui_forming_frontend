@@ -8,8 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { useMoveCalls } from "@/hooks/useMoveCalls"
+
 
 export default function SurveyPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const { submitAnswers } = useMoveCalls()
   const router = useRouter()
   const [showSurvey, setShowSurvey] = useState(false)
   const [formData, setFormData] = useState({
@@ -18,6 +24,7 @@ export default function SurveyPage() {
     question3: "",
     question4: "",
   })
+   const formObjectId = "0x5c2785b1deb4a789713463a99f756495d61471db61a6de4ba9b0b291659d34cd"
 
   const handleStartSurvey = () => {
     setShowSurvey(true)
@@ -31,14 +38,46 @@ export default function SurveyPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Store form data in localStorage to access it on the thank you page
-    localStorage.setItem("surveyData", JSON.stringify(formData))
-
-    // Navigate to thank you page
-    router.push("/form_participants/missions/thank-you")
+    setIsSubmitting(true)
+    setSubmitError(null)
+    try {
+        // Convert form data to array of answers in the order required by the contract
+        const answers = [
+          formData.question1,
+          formData.question2,
+          formData.question3,
+          formData.question4,
+        ]
+        
+        // Call the submitAnswers function from your hook
+        const result = await submitAnswers({
+          formObjectId,
+          answers,
+        })
+        
+        console.log('Survey answers submitted successfully:', result)
+        
+        // Store form data in localStorage to access it on the thank you page
+        localStorage.setItem("surveyData", JSON.stringify(formData))
+        
+        setSubmitSuccess(true)
+        
+        // Navigate to thank you page after a short delay
+        setTimeout(() => {
+          router.push("/form_participants/missions/thank-you")
+        }, 2000)
+        
+      } catch (error) {
+        console.error('Failed to submit survey answers:', error)
+        setSubmitError(error instanceof Error ? error.message : "Failed to submit survey answers")
+      } finally {
+        setTimeout(() => {
+            router.push("/form_participants/missions/thank-you")
+          }, 2000)
+        setIsSubmitting(false)
+      }
   }
 
   return (
@@ -136,8 +175,8 @@ export default function SurveyPage() {
                 />
               </div>
 
-              <Button type="submit" className="w-full">
-                Complete Survey
+              <Button type="submit" className="w-full" disabled={isSubmitting || submitSuccess}>
+                {isSubmitting ? "Submitting..." : "Complete Survey"}
               </Button>
             </form>
           </CardContent>

@@ -4,7 +4,6 @@ import { Transaction } from "@mysten/sui/transactions";
 import { useSuiClient } from "@suiet/wallet-kit";
 
 export const useMoveCalls = () => {
-   
   const client = new SuiClient({
     url: getFullnodeUrl("testnet")
   });
@@ -71,7 +70,7 @@ export const useMoveCalls = () => {
 
       const result = await signAndExecuteTransaction({
         transaction: tx,
-      },{});
+      }, {});
 
       console.log('✅ Form created:', result);
       return result;
@@ -81,7 +80,47 @@ export const useMoveCalls = () => {
     }
   };
 
+  // New function for submitting answers to a form
+  const submitAnswers = async ({
+    formObjectId,
+    answers,
+  }: {
+    formObjectId: string;
+    answers: string[];
+  }) => {
+    try {
+      if (!account?.address) {
+        throw new Error("Wallet is not connected.");
+      }
+
+      const tx = new Transaction();
+      
+      // Create a vector of string answers to pass to the contract
+      const answersVector = tx.pure.vector('string', answers);
+      
+      // Call the submit_answer function on the forms module
+      tx.moveCall({
+        target: `${packageObjectId}::forms::submit_answer`,
+        arguments: [
+          tx.object(formObjectId), // The form object ID
+          answersVector, // Vector of answers
+        ],
+      });
+
+      const result = await signAndExecuteTransaction({
+        transaction: tx,
+      }, {});
+
+      console.log('✅ Answers submitted:', result);
+      return result;
+    } catch (err) {
+      console.error('❌ Failed to submit answers:', err);
+      throw err;
+    }
+  };
+
   return {
-    createForm
+    createForm,
+    submitAnswers
   };
 };
